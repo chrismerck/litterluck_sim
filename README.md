@@ -11,6 +11,11 @@ Install node pre-requisites:
 
     npm install express nodejs-websocket
 
+Edit the URL of the socket (found in static/index.html) to match
+your webserver's address:
+
+    var ws = new WebSocket("ws://your.server.com:8001");
+
 Start the web/websocket server:
 
     node ll_source.js
