@@ -53,16 +53,17 @@ var server = ws.createServer(function (conn) {
 						dataProp.stance = 'upright';
 					}
 				}
-				//Don't want all of the data, only what is
-				//relevant. Extrapolate to a seperate object.
-				jobj = {};
+				//We only want to resend the "Feature" that is
+				//being updated.
+				
+				/*jobj = db['features'].{};
 				jobj.uid = dataProp.uid;
 				jobj.temp =dataProp.temp;
 				jobj.stance = dataProp.stance;
 				jobj.lat = coordinates[0];
-				jobj.lon = coordinates[1];
+				jobj.lon = coordinates[1];*/
 				try{
-					conn.sendText(JSON.stringify(jobj) + '\r\n');
+					conn.sendText(JSON.stringify(db['features'][i]) + '\r\n');
 					} catch (e) {  
 						}
 			}
