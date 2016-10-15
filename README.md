@@ -1,7 +1,8 @@
 LitterLuck Data Simulator
 =========================
 
-Simulates data from dumpster monitors.
+Simulates data from dumpster monitors. The format used to represent the data is
+GeoJSON.
 
 Quick Start
 ----

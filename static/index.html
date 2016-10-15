@@ -8,7 +8,7 @@
   <script type="text/javascript">
     function WebSocketTest() {
       if ("WebSocket" in window) {
-        var ws = new WebSocket("ws://ttn.merckeng.com:8001");
+        var ws = new WebSocket("ws://127.0.0.1:8001");
         ws.onopen = function() {
           ws.send("reply");
           $('.log').append("WebSocket connected.<br>");
