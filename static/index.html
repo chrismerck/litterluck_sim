@@ -11,7 +11,7 @@
         var ws = new WebSocket("ws://127.0.0.1:8001");
         ws.onopen = function() {
           ws.send("reply");
-          $('.log').append("WebSocket connected.<br>");
+          //$('.log').append("WebSocket connected.<br>");
         };
 
         ws.onmessage = function (evt) {
@@ -20,7 +20,7 @@
         };
 
         ws.onclose = function () {
-          $('.log').append("WebSocket closed.<br>");
+          //$('.log').append("WebSocket closed.<br>");
         }; 
       } else { 
         alert("Your browser does not support WebSockets.");
