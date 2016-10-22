@@ -12,7 +12,7 @@ for(i = 0; i < N; i++) {
 		'type': 'Feature',
 		'geometry': {
 			'type': 'Point',
-		  'coordinates': [40.7+0.1*Math.random(), -74.0+0.1*Math.random()]
+		  'coordinates': [40.7+0.1*Math.random(), 74.0+0.1*Math.random()]
 		},
 		'properties': {
 			'uid': i,
@@ -24,53 +24,64 @@ for(i = 0; i < N; i++) {
 	});
 }
 
-// Scream server example: "hi" -> "HI!!!" 
-var server = ws.createServer(function (conn) {
-	console.log("New connection")
-	conn.on("text", function (str) {
-		console.log("Received "+str)
-	})
-	conn.on("close", function (code, reason) {
-		console.log("Connection closed")
-  	})
-  // send simulated data
-	setInterval(function () {
-		now = Date.now();
-		for (i = 0; i<N; i++) {
-			dataProp = db["features"][i].properties;
-			coordinates = db["features"][i].geometry.coordinates;
-			if (dataProp.next_update < now) {
-				dataProp.next_update += dataProp.interval_value;
-				//Update temp with in a random value.
-				dataProp.temp += 2*(Math.random()-0.5);
-				if (dataProp.stance == 'upright') {
-					if (Math.random() < 0.01) {
-						dataProp.stance = 'fallen';
-					}
-				}
-				if (dataProp.stance == 'fallen') {
-					if (Math.random() < 0.01) {
-						dataProp.stance = 'upright';
-					}
-				}
-				//We only want to resend the "Feature" that is
-				//being updated.
-				
-				/*jobj = db['features'].{};
-				jobj.uid = dataProp.uid;
-				jobj.temp =dataProp.temp;
-				jobj.stance = dataProp.stance;
-				jobj.lat = coordinates[0];
-				jobj.lon = coordinates[1];*/
-				try{
-					conn.sendText(JSON.stringify(db['features'][i]) + '\r\n');
-					} catch (e) {  
+function dynamicData() {
+	var server = ws.createServer(function (conn) {
+		console.log("New connection")
+		conn.on("text", function (str) {
+			console.log("Received "+str)
+		})
+		conn.on("close", function (code, reason) {
+			console.log("Connection closed")
+  		})
+  	// send simulated data
+		setInterval(function () {
+			now = Date.now();
+			for (i = 0; i<N; i++) {
+				dataProp = db["features"][i].properties;
+				coordinates = db["features"][i].geometry.coordinates;
+				if (dataProp.next_update < now) {
+					dataProp.next_update += dataProp.interval_value;
+					//Update temp with in a random value.
+					dataProp.temp += 2*(Math.random()-0.5);
+					if (dataProp.stance == 'upright') {
+						if (Math.random() < 0.01) {
+							dataProp.stance = 'fallen';
 						}
+					}
+					if (dataProp.stance == 'fallen') {
+						if (Math.random() < 0.01) {
+							dataProp.stance = 'upright';
+						}
+					}
+					//We only want to resend the "Feature" that is
+					//being updated.
+				try{
+						conn.sendText(JSON.stringify(db['features'][i]) + '\r\n');
+						} catch (e) {  
+							}
+				}
 			}
-		}
-	}, 1);
-}).listen(8001);
+		}, 1);
+	}).listen(8001);
+}
 
+function staticData() {
+	var server = ws.createServer(function (conn) {
+		//console.log("New connection");
+		conn.on("text", function (str) {
+			console.log("Received "+str)
+		})
+		conn.on("close", function (code, reason) {
+			console.log("Connection closed")
+  		})
+	
+		conn.sendText(JSON.stringify(db));
+
+	}).listen(8001);
+}
+
+
+staticData();
 var express = require('express');
 var app = express();
 app.use(express.static('static'));
