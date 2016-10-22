@@ -12,7 +12,7 @@ for(i = 0; i < N; i++) {
 		'type': 'Feature',
 		'geometry': {
 			'type': 'Point',
-		  'coordinates': [40.7+0.1*Math.random(), 74.0+0.1*Math.random()]
+		  'coordinates': [-74.0+0.1*Math.random(),40.7+0.1*Math.random()]
 		},
 		'properties': {
 			'uid': i,
