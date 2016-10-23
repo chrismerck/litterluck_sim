@@ -24,7 +24,7 @@ for(i = 0; i < N; i++) {
 	});
 }
 
-function dynamicData() {
+function dynamicData(port) {
 	var server = ws.createServer(function (conn) {
 		console.log("New connection")
 		conn.on("text", function (str) {
@@ -62,7 +62,7 @@ function dynamicData() {
 				}
 			}
 		}, 1);
-	}).listen(8001);
+	}).listen(port);
 }
 
 function staticData() {
@@ -96,7 +96,9 @@ function static_html()
 	server.listen(8001);
 }
 
+dynamicData(8002);
 static_html();
+
 /*
 var express = require('express');
 var app = express();
