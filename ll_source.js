@@ -1,5 +1,5 @@
 var ws = require("nodejs-websocket");
-
+var http = require('http');
 var N = 100; // number of nodes
 var ival = 1000*15; // update interval in ms
 var ival_rand = 1000*10; // random amount added to update interval
@@ -76,13 +76,37 @@ function staticData() {
   		})
 	
 		conn.sendText(JSON.stringify(db));
-
+		
 	}).listen(8001);
 }
 
+function static_html()
+{
+	var server = http.createServer(function(request, response){
+		
+		// Website you wish to allow to connect
+		response.setHeader('Access-Control-Allow-Origin', '*');
+		response.setHeader('Access-Control-Request-Method', '*');
+		response.writeHead(200, {'Content-Type':
+'application/javascript'});
+		response.write(JSON.stringify(db));
+		response.end();
+	});
 
-staticData();
+	server.listen(8001);
+}
+
+static_html();
+/*
 var express = require('express');
 var app = express();
+app.use(function (req, res, next) {
+	// Website you wish to allow to connect
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+	next();
+});
 app.use(express.static('static'));
 app.listen(8081);
+*/
