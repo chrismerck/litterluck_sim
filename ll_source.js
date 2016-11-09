@@ -5,8 +5,21 @@ var ival = 1000*15; // update interval in ms
 var ival_rand = 1000*10; // random amount added to update interval
 //The 'database' to hold all of the data; in GeoJSON format.
 var db = { 	'type': 'FeatureCollection',
-		'features': [] };	
+		'features': [] };
+/* Schema: histData: {
+*		Asset#: {
+			time#:	{
+					temp:value,
+					stance:value
+				}
+			}
+		     }
+*/
+var histData = {};	
 for(i = 0; i < N; i++) {
+	var temp = Math.random()*(85+20)-20;
+	var stance = 'upright';
+	var uid = i;
 	db['features'].push(
   	{  
 		'type': 'Feature',
@@ -15,13 +28,16 @@ for(i = 0; i < N; i++) {
 		  'coordinates': [-74.0+0.1*Math.random(),40.7+0.1*Math.random()]
 		},
 		'properties': {
-			'uid': i,
-			'temp': Math.random()*(85+20)-20,
-			'stance': 'upright',
+			'uid': uid,
+			'temp': temp,
+			'stance': stance,
 			'next_update': Date.now()+ival*Math.random(),
 			'interval_value': ival + ival_rand*Math.random()
 		}
 	});
+	time = Date.now().toString();
+	histData[uid] = { };
+	histData[uid][time] = { 'temp': temp, 'stance':stance };
 }
 
 function dynamicData(port) {
@@ -55,7 +71,8 @@ function dynamicData(port) {
 					}
 					//We only want to resend the "Feature" that is
 					//being updated.
-				try{
+					histData[i][now] = { 'temp':dataProp.temp, 'stance':dataProp.stance};
+					try{
 						conn.sendText(JSON.stringify(db['features'][i]) + '\r\n');
 						} catch (e) {  
 							}
@@ -65,25 +82,9 @@ function dynamicData(port) {
 	}).listen(port);
 }
 
-function staticData() {
-	var server = ws.createServer(function (conn) {
-		//console.log("New connection");
-		conn.on("text", function (str) {
-			console.log("Received "+str)
-		})
-		conn.on("close", function (code, reason) {
-			console.log("Connection closed")
-  		})
-	
-		conn.sendText(JSON.stringify(db));
-		
-	}).listen(8001);
-}
-
 function static_html()
 {
-	var server = http.createServer(function(request, response){
-		
+	var server = http.createServer(function(request, response) {
 		// Website you wish to allow to connect
 		response.setHeader('Access-Control-Allow-Origin', '*');
 		response.setHeader('Access-Control-Request-Method', '*');
