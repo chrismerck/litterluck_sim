@@ -87,8 +87,7 @@ function dynamicData(port) {
 				isUpdated = updateData(i,currntTime);
 				if(isUpdated){
 					try {
-						conn.sendText(JSON.stringify(db['features'][i]) + '\r\n');
-						//TODO: Send historical data.
+						conn.sendText(JSON.stringify(db['features'][i]) + '\r\n' + JSON.stringify(histData[i]));
 						} catch(e) {
 					}
 				}
